@@ -16,7 +16,7 @@ def get_crypto_news(symbol, api_key):
 
 # Function to get historical cryptocurrency data using CoinGecko API
 def get_crypto_data(symbol, days=90):
-     try:   
+    try:
         cg = CoinGeckoAPI()
         crypto_data = cg.get_coin_market_chart_by_id(id=symbol, vs_currency='usd', days=days)
         data_df = pd.DataFrame(crypto_data['prices'], columns=['timestamp', 'price'])
