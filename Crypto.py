@@ -16,15 +16,18 @@ def get_crypto_news(symbol, api_key):
 
 # Function to get historical cryptocurrency data using CoinGecko API
 def get_crypto_data(symbol, days=90):
-    cg = CoinGeckoAPI()
-    crypto_data = cg.get_coin_market_chart_by_id(id=symbol, vs_currency='usd', days=days)
-
-    data_df = pd.DataFrame(crypto_data['prices'], columns=['timestamp', 'price'])
-    data_df['Date'] = pd.to_datetime(data_df['timestamp'], unit='ms')
-    candlestick_data = data_df.groupby(data_df['Date'].dt.date).aggregate({'price': {'max', 'min', 'first', 'last'}})
-    candlestick_data.columns = ['max_price', 'closing_price', 'opening_price', 'min_price']
-    candlestick_data.reset_index(inplace=True)  # Reset index to include 'Date'
-    return data_df, candlestick_data
+     try:   
+        cg = CoinGeckoAPI()
+        crypto_data = cg.get_coin_market_chart_by_id(id=symbol, vs_currency='usd', days=days)
+        data_df = pd.DataFrame(crypto_data['prices'], columns=['timestamp', 'price'])
+        data_df['Date'] = pd.to_datetime(data_df['timestamp'], unit='ms')
+        candlestick_data = data_df.groupby(data_df['Date'].dt.date).aggregate({'price': {'max', 'min', 'first', 'last'}})
+        candlestick_data.columns = ['max_price', 'closing_price', 'opening_price', 'min_price']
+        candlestick_data.reset_index(inplace=True)  # Reset index to include 'Date'
+        return data_df, candlestick_data
+    except Exception as e:
+        print(f"Error in get_crypto_data: {e}")
+        raise 
 
 # Function to get Fear and Greed Index data
 def get_fng_data():
